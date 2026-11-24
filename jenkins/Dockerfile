@@ -17,8 +17,12 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Jenkins 2.580.x 的 class 文件版本是 65，运行时必须 JDK 21（JDK 17 会在启动时报 UnsupportedClassVersionError）。
 # 项目本身仍然按 pom 的 release=17 编译，不受影响。
-RUN apt-get update \
- && apt-get install -y --no-install-recommends openjdk-21-jdk maven unzip ca-certificates tzdata \
+# apt 走清华 ubuntu-ports 镜像：官方 ports.ubuntu.com 在国内经常几十 KB/s，构建会卡在 apt 阶段。
+RUN sed -i 's#http://ports.ubuntu.com/ubuntu-ports#https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports#g; s#http://archive.ubuntu.com/ubuntu#https://mirrors.tuna.tsinghua.edu.cn/ubuntu#g' \
+      /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
+RUN apt-get -o Acquire::Retries=3 update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      openjdk-21-jdk maven unzip ca-certificates tzdata socat \
  && rm -rf /var/lib/apt/lists/*
 
 # JAVA_HOME：用 readlink 解出真实路径，再断言 javac 存在。
@@ -41,9 +45,14 @@ COPY jenkins.war /opt/jenkins/jenkins.war
 # Maven 走阿里云镜像；只挂载 /root/.m2/repository 时这份 settings 不会被卷遮住
 COPY m2-settings.xml /root/.m2/settings.xml
 
+# 宿主目录以只读方式挂到 /src，属主是 uid 501；容器里以 root 跑 git 会把仓库判成
+# "dubious ownership" 而拒绝 clone，这里显式放行这一个固定路径。
+RUN git config --system --add safe.directory /src/UI-TEST-AI-FOR-JAVA
+
+COPY entrypoint.sh /usr/local/bin/jenkins-entrypoint.sh
+RUN chmod +x /usr/local/bin/jenkins-entrypoint.sh
+
 EXPOSE 8080
 
-# 清掉基础镜像可能自带的 entrypoint，保证 docker run 直接是 java -jar
-ENTRYPOINT []
-CMD ["java", "-Xms256m", "-Xmx1536m", "-Duser.timezone=Asia/Shanghai", \
-     "-jar", "/opt/jenkins/jenkins.war", "--httpPort=8080", "--httpListenAddress=0.0.0.0"]
+# 入口脚本：先在 127.0.0.1:80 转发到被测站点，再启动 Jenkins（原因见 entrypoint.sh）
+ENTRYPOINT ["/usr/local/bin/jenkins-entrypoint.sh"]
