@@ -1,0 +1,67 @@
+{
+  "project_root": "/Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA",
+  "language": "java",
+  "stack": "playwright-java + cucumber7 + junit5-platform",
+  "base_url_key": "LILISHOP_UI_BASE_URL",
+  "api_base_url_key": "LILISHOP_BASE_URL",
+  "paths": {
+    "page_dirs": ["src/test/java/com/lili/ui/pages"],
+    "flow_dirs": ["src/test/java/com/lili/ui/flows"],
+    "locator_dirs": ["src/test/resources/locators"],
+    "test_case_dirs": ["src/test/java/com/lili/ui/steps"],
+    "feature_dirs": ["src/test/resources/features"],
+    "runtime_temp_dir": "ui_test_dwp_temp",
+    "knowledge_dir": "docs"
+  },
+  "ui": {
+    "routes_file": "src/test/resources/routes.yaml",
+    "storage_state": "ui_test_dwp_temp/buyer_storage.json",
+    "browser": {
+      "channel": "chrome",
+      "headless": true,
+      "viewport": {"width": 1440, "height": 900},
+      "timeout_ms": 15000
+    },
+    "default_wait_ms": 15000,
+    "heal": {"enabled": true, "llm": false}
+  },
+  "probe": {
+    "max_elements": 200,
+    "max_frames": 8,
+    "max_frame_depth": 3,
+    "max_shadow_depth": 3,
+    "max_visited": 6000,
+    "max_steps": 5,
+    "validate_l1": true,
+    "a11y": false,
+    "safe_hints": [
+      "筛选", "排序", "展开", "收起", "更多", "下一页", "上一页",
+      "切换", "页签", "下拉", "查看", "全部", "价格", "销量", "综合"
+    ],
+    "danger_words": [
+      "提交", "支付", "结算", "购买", "删除", "清空", "取消订单",
+      "确认收货", "退出", "领取", "兑换", "保存", "加入购物车", "立即购买",
+      "确定", "确认"
+    ]
+  },
+  "case_design": {
+    "checklist_template": ".codebuddy/skills/ui-test-forge/assets/templates/checklist.md.tpl",
+    "checklist_output": "ui_test_dwp_temp/design_checklist.md",
+    "require_user_confirm": true,
+    "min_scenarios_for_ratio": 4,
+    "dimensions": {
+      "positive_max_ratio": 0.5,
+      "negative_min_ratio": 0.2,
+      "boundary_min_ratio": 0.15,
+      "exception_min_ratio": 0.1
+    }
+  },
+  "gate": {
+    "enabled": true
+  },
+  "run": {
+    "command_template": "mvn test -Dcucumber.filter.tags={tags} -Dui.headless=true",
+    "allure_results_dir": "allure-results",
+    "stability_runs": 3
+  }
+}

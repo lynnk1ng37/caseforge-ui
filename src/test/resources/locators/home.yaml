@@ -1,0 +1,29 @@
+# 首页（/）定位器（probe 实测 2026-11-23）
+- id: home.search_input
+  page: home
+  primary: {by: placeholder, value: "输入你想查找的商品"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: home.category_item
+  page: home
+  primary: {by: css, value: ".nav-side-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: home.recommend_item
+  page: home
+  primary: {by: css, value: ".right-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: home.seckill_flag
+  page: home
+  # 秒杀页独有文案，用来确认已进入 /seckill
+  primary: {by: text, value: "限时秒杀", exact: false}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe

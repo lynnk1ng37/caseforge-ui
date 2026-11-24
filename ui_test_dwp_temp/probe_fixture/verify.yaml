@@ -1,0 +1,49 @@
+# 夹具专用，仅用于验证探针的跨 frame / shadow 计数；不要复制进 src/test/resources
+- id: fixture.main_btn
+  page: fixture
+  primary: {by: role, role: button, name: "主文档按钮"}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.shadow_btn
+  page: fixture
+  primary: {by: css, value: "#shadow-btn"}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.deep_shadow_btn
+  page: fixture
+  primary: {by: css, value: "#deep-shadow-btn"}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.frame_btn
+  page: fixture
+  primary: {by: css, value: "#frame-btn"}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.deep_frame_btn
+  page: fixture
+  primary: {by: css, value: "#frame2-btn"}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.frame_btn_role
+  page: fixture
+  primary: {by: role, role: button, name: "框架按钮", exact: true}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual
+
+- id: fixture.closed_shadow_btn
+  page: fixture
+  primary: {by: role, role: button, name: "关闭影子按钮", exact: true}
+  verified_at: "2026-11-24"
+  verified_env: "fixture-127.0.0.1:8899"
+  source: manual

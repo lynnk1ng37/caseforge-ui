@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$CODEBUDDY_PROJECT_DIR/.venv/bin/python\"; [ -x \"$p\" ] || p=python3; \"$p\" \"$CODEBUDDY_PROJECT_DIR/.codebuddy/skills/ui-test-forge/hooks/preflight_hook.py\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$CODEBUDDY_PROJECT_DIR/.venv/bin/python\"; [ -x \"$p\" ] || p=python3; \"$p\" \"$CODEBUDDY_PROJECT_DIR/.codebuddy/skills/ui-test-forge/hooks/confirm_log_hook.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$CODEBUDDY_PROJECT_DIR/.venv/bin/python\"; [ -x \"$p\" ] || p=python3; \"$p\" \"$CODEBUDDY_PROJECT_DIR/.codebuddy/skills/ui-test-forge/hooks/preflight_hook.py\"",
+            "timeout": 120
+          }
+        ]
+      },
+      {
+        "matcher": "Write|write_to_file|Edit|replace_in_file|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$CODEBUDDY_PROJECT_DIR/.venv/bin/python\"; [ -x \"$p\" ] || p=python3; \"$p\" \"$CODEBUDDY_PROJECT_DIR/.codebuddy/skills/ui-test-forge/hooks/ui_gate_hook.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

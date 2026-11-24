@@ -1,0 +1,25 @@
+# lilishop 买家端路由（实测 2026-11-23，本地 127.0.0.1）
+# 换环境后必须重新实测，不要照抄。
+home: /
+home_index: /home              # 个人中心
+login: /login
+goods_list: /goodsList
+goods_detail: /goodsDetail
+point_goods_detail: /pointGoodsDetail
+point_mall: /PointMall
+seckill: /seckill
+coupon_center: /coupon
+cart: /cart
+checkout: /pay          # 去结算后的填写订单页
+payment: /payment       # 提交订单后的收银台
+pay_done: /payDone
+my_orders: /home/MyOrder
+order_detail: /home/OrderDetail
+my_address: /home/MyAddress
+add_address: /home/addAddress
+my_after_sale: /home/AfterSale
+my_coupons: /home/Coupons
+my_point: /home/Point
+my_grade: /home/MemberGrade
+my_gift_cards: /home/MyGiftCards
+money_management: /home/MoneyManagement

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.lili</groupId>
+  <artifactId>ui-test-ai-for-java</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>UI-TEST-AI-FOR-JAVA</name>
+  <description>lilishop 买家端 UI 自动化：Java + Playwright + Cucumber BDD</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <playwright.version>1.49.0</playwright.version>
+    <cucumber.version>7.20.1</cucumber.version>
+    <junit.platform.version>1.11.3</junit.platform.version>
+    <junit.jupiter.version>5.11.3</junit.jupiter.version>
+    <allure.version>2.29.1</allure.version>
+    <snakeyaml.version>2.3</snakeyaml.version>
+    <jackson.version>2.18.1</jackson.version>
+    <assertj.version>3.26.3</assertj.version>
+
+    <!-- 命令行可覆盖：
+         mvn test -Dcucumber.filter.tags="@p0"
+         mvn test -Dui.headless=false
+    -->
+    <cucumber.filter.tags></cucumber.filter.tags>
+    <ui.headless>true</ui.headless>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>${playwright.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit-platform-engine</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-picocontainer</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite</artifactId>
+      <version>${junit.platform.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber7-jvm</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>${snakeyaml.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+          <excludes>
+            <!-- com.lili.ui.runners 下是为「IDE 里单跑一个 feature」准备的入口类；
+                 全量回归由 RunCucumberTest 统一调度，排除它们避免每条用例跑两遍。
+                 单独运行仍然可用：mvn test -Dtest=CartFeatureTest -->
+            <exclude>**/runners/*.java</exclude>
+          </excludes>
+          <systemPropertyVariables>
+            <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+            <cucumber.publish.quiet>true</cucumber.publish.quiet>
+            <ui.headless>${ui.headless}</ui.headless>
+            <!-- allure-java 的默认结果目录是相对路径 allure-results（会落在仓库根），
+                 这里显式钉到 target 下：mvn clean 能清掉，报告与 Jenkins 归档路径一致。 -->
+            <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+          </systemPropertyVariables>
+          <environmentVariables>
+            <!-- 用系统 Chrome（config.yaml 的 ui.channel），不需要 Playwright 自带浏览器。
+                 不设这个变量时，Playwright Java 首次 create() 会下载 chromium/firefox/webkit
+                 全套（实测一次花掉 5 分钟并伴随超时）。要改用自带浏览器时删掉本行。 -->
+            <PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD>1</PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,51 @@
+# 我的订单页（/home/MyOrder）定位器（probe 实测 2026-11-12）
+# 注意：订单状态文案是「未付款」，不是「待付款」；标签文本才是「待付款」。
+- id: order_list.tab
+  page: order_list
+  primary: {by: css, value: ".cardTabsItem"}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.active_tab
+  page: order_list
+  primary: {by: css, value: ".cardTabsItem.active"}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.rows
+  page: order_list
+  primary: {by: css, value: ".order-list"}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.search_input
+  page: order_list
+  primary: {by: placeholder, value: "请输入订单号搜索"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.detail_button
+  page: order_list
+  # 每张订单卡片右下角的「订单详情」，取第一条即第一笔订单
+  primary: {by: css, value: ".order-body .ivu-btn", text: "订单详情"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.cancel_button
+  page: order_list
+  primary: {by: css, value: ".order-list .ivu-btn", text: "取消订单"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_list.modal_ok
+  page: order_list
+  primary: {by: css, value: ".ivu-modal .ivu-btn-primary"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

@@ -1,0 +1,14 @@
+# 我的售后（/home/AfterSale）定位器（probe 实测 2026-11-24）
+- id: after_sale.empty_tip
+  page: after_sale
+  primary: {by: text, value: "暂无更多"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: after_sale.card_title
+  page: after_sale
+  primary: {by: text, value: "我的售后"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

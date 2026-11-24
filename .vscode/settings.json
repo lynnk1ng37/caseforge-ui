@@ -1,0 +1,20 @@
+{
+  // ── Cucumber (Gherkin) Full Support：feature 步骤 ⇄ step 定义 的跳转/补全 ──
+  // 不配这一项，F12 / Ctrl+点击 步骤会提示「未找到引用」
+  "cucumberautocomplete.steps": [
+    "src/test/java/com/lili/ui/steps/*.java"
+  ],
+  "cucumberautocomplete.syncfeatures": "src/test/resources/features/*.feature",
+  "cucumberautocomplete.strictGherkinCompletion": false,
+  "cucumberautocomplete.smartSnippets": true,
+  "cucumberautocomplete.stepsInvariants": true,
+
+  // ── Cucumber Java Runner：右键 / 测试面板执行 ──
+  // 扩展自动发现的 glue 只有 com.lili.ui.steps（steps 目录），
+  // hooks 不在其中：不补这一项，浏览器/登录态/Allure 都不会生效，用例必然失败
+  "cucumberJavaRunner.additionalGluePaths": [
+    "com.lili.ui.hooks"
+  ],
+  "cucumberJavaRunner.autoCompileMaven": true,
+  "cucumberJavaRunner.logLevel": "info"
+}

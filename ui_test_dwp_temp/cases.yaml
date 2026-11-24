@@ -1,0 +1,502 @@
+# 人工用例归一化（只翻译，不补充；来源 manual_testcases/02-测试用例设计 gerkin.md）
+# 范围：首页与搜索 / 商品详情与营销 / 购物车 / 结算下单支付 / 个人中心订单售后 / 会员资产
+# 排除：分销中心（LLS-DIST-*）整体不转写
+meta:
+  source_file: "manual_testcases/02-测试用例设计 gerkin.md"
+  env_ui: "http://127.0.0.1"
+  env_api: "http://127.0.0.1/api"
+  login: "API 登录 + 注入 accessToken/refreshToken cookie"
+  excluded_module: "分销中心（LLS-DIST-001 ~ 014）"
+  excluded_reason: "用户明确不转写分销中心"
+
+cases:
+  # ---------- 首页与搜索 ----------
+  - id: LLS-HOME-001
+    module: 首页与搜索
+    priority: P1
+    type: 正向
+    scenario: 未登录访问首页可浏览且登录入口可用
+    given: ["清除 cookie 的匿名会话"]
+    when: ["打开首页"]
+    then: ["分类导航与推荐商品区可见", "顶部展示「立即注册」「请登录」入口", "页面不出现 404 文案"]
+  - id: LLS-HOME-002
+    module: 首页与搜索
+    priority: P1
+    type: 正向
+    scenario: 顶部导航入口跳转正确
+    given: ["已登录买家"]
+    when: ["点击顶部购物车入口", "点击顶部我的订单入口"]
+    then: ["进入 /cart 且出现「我的购物车」", "进入 /home/MyOrder 且出现订单 Tab"]
+  - id: LLS-HOME-004
+    module: 首页与搜索
+    priority: P0
+    type: 正向
+    scenario: 有效关键字搜索命中商品并可进入详情
+    given: ["商品「一加 OnePlus 9」在售"]
+    when: ["搜索框输入「一加」并回车", "点击结果第一条"]
+    then: ["结果条数 >= 1 且首条名称含「一加」", "详情页标题含「一加 OnePlus 9」"]
+  - id: LLS-HOME-005
+    module: 首页与搜索
+    priority: P1
+    type: 边界
+    scenario: 搜索关键字为空、空格、1 字符与超长字符边界
+    given: ["首页搜索框可用"]
+    when: ["提交空关键字", "提交纯空格", "提交 1 个字符", "输入 60 个字符"]
+    then: ["空与纯空格不进入结果页（URL 无 keyword）", "1 字符进入结果页且不白屏", "60 字符输入值不被截断到 0 且页面不白屏"]
+  - id: LLS-HOME-006
+    module: 首页与搜索
+    priority: P1
+    type: 负向
+    scenario: 无结果关键字展示空态且不残留旧结果
+    given: ["已完成一次有结果的搜索"]
+    when: ["搜索一个确定无结果的关键字"]
+    then: ["结果条目为 0 或页脚显示「共 0 条」", "页面不残留上一次搜索的商品列表"]
+  - id: LLS-HOME-010
+    module: 首页与搜索
+    priority: P1
+    type: 正向
+    scenario: 秒杀与优惠券入口可进入且活动内容展示
+    given: ["首页已配置秒杀与领券中心入口"]
+    when: ["点击顶部「优惠券」入口", "点击顶部「秒杀」入口"]
+    then: ["进入 /coupon 且出现「领券中心」", "进入 /seckill 且出现「限时秒杀」"]
+
+  # ---------- 商品详情与营销 ----------
+  - id: LLS-GOODS-001
+    module: 商品详情与营销活动
+    priority: P0
+    type: 正向
+    scenario: 切换 SKU 后价格与库存同步变化
+    given: ["商品 1376373278360207360 有「紫色/黑色」两个 SKU"]
+    when: ["切换为「黑色」", "再切换为「紫色」"]
+    then: ["黑色显示 ￥3,899.00 与库存 1992", "紫色显示 ￥3,799.00 与库存 1983", "不出现规格与价格串位"]
+  - id: LLS-GOODS-002
+    module: 商品详情与营销活动
+    priority: P0
+    type: 正向
+    scenario: 商品基础信息与类型展示正确
+    given: ["商品在售且已配置详情"]
+    when: ["打开商品详情页"]
+    then: ["名称含「一加 OnePlus 9」且价格 ￥3,799.00", "展示规格、库存、累计评价数量", "展示「实物商品」标识与加入购物车/立即购买按钮"]
+  - id: LLS-GOODS-003
+    module: 商品详情与营销活动
+    priority: P0
+    type: 负向
+    scenario: 售罄或下架商品不可购买
+    given: ["存在一个库存为 0 或已下架的商品"]
+    when: ["打开该商品详情页", "尝试加入购物车"]
+    then: ["展示「已下架」「无货」或「已售罄」提示", "加购/立即购买不可用或被拦截", "不生成订单"]
+  - id: LLS-GOODS-004
+    module: 商品详情与营销活动
+    priority: P0
+    type: 边界
+    scenario: 购买数量在 1、库存与非法值之间的边界
+    given: ["商品库存为 1983"]
+    when: ["输入数量 1 并确认", "输入 0 与 -1", "输入 99999"]
+    then: ["1 被接受且小计正确", "0 与 -1 回退到 1", "99999 被截断或提示库存不足"]
+  - id: LLS-GOODS-005
+    module: 商品详情与营销活动
+    priority: P1
+    type: 边界
+    scenario: 批发商品低于起批数量被拦截
+    given: ["存在起批数量为 10 的批发商品"]
+    when: ["输入 9 并尝试加购", "输入 10 并尝试加购"]
+    then: ["9 提示不能小于起批数量并拦截", "10 允许且小计正确"]
+  - id: LLS-GOODS-006
+    module: 商品详情与营销活动
+    priority: P0
+    type: 正向
+    scenario: 加入购物车与立即购买入口均可用
+    given: ["已登录、商品有库存且规格已选"]
+    when: ["点击加入购物车", "返回详情页点击立即购买"]
+    then: ["加购提示「商品已成功加入购物车！」且购物车角标加 1", "立即购买进入结算页且商品与价格一致"]
+  - id: LLS-GOODS-007
+    module: 商品详情与营销活动
+    priority: P1
+    type: 负向
+    scenario: 优惠券重复领取被拦截且只增加 1 张
+    given: ["领券中心存在限领 1 张的券"]
+    when: ["首次点击「立即领取」", "再次点击同一张券"]
+    then: ["首次领取成功后按钮变为「已领取」", "再次领取提示已达领取上限", "我的优惠券中该券数量为 1"]
+  - id: LLS-GOODS-014
+    module: 商品详情与营销活动
+    priority: P0
+    type: 负向
+    scenario: 积分不足或活动库存为 0 时不可兑换
+    given: ["存在积分商品且账号积分不足"]
+    when: ["打开积分商品详情", "点击积分购买"]
+    then: ["积分不足提示并拦截", "活动库存为 0 时提示已售罄", "不生成订单"]
+  - id: LLS-GOODS-015
+    module: 商品详情与营销活动
+    priority: P2
+    type: 正向
+    scenario: 商品评价区展示与无评价空态
+    given: ["商品当前累计评价为 0 条"]
+    when: ["打开详情页查看评价区", "切换到「商品评价」"]
+    then: ["累计评价显示 0 条", "评价区展示空态而非报错"]
+
+  # ---------- 购物车 ----------
+  - id: LLS-CART-001
+    module: 购物车
+    priority: P0
+    type: 正向
+    scenario: 加购单商品后列表与角标正确
+    given: ["已登录、购物车为空、商品有库存"]
+    when: ["在详情页加购 1 件", "打开购物车"]
+    then: ["角标为 1", "列表 1 行且数量为 1", "单价与总价均为 ￥3,799.00"]
+  - id: LLS-CART-002
+    module: 购物车
+    priority: P0
+    type: 正向
+    scenario: 同一 SKU 重复加购数量累加且不新增重复行
+    given: ["购物车已有该 SKU 1 件"]
+    when: ["再次加购同一 SKU 1 件"]
+    then: ["仍只有 1 行且数量为 2", "总价为 ￥7,598.00"]
+  - id: LLS-CART-003
+    module: 购物车
+    priority: P1
+    type: 正向
+    scenario: 多店铺多 SKU 按店铺分组且不串规格
+    given: ["购物车含两个店铺的商品"]
+    when: ["打开购物车"]
+    then: ["按店铺分组展示且店铺数 >= 2", "每行商品名与所属店铺匹配", "各行小计之和等于总价"]
+  - id: LLS-CART-004
+    module: 购物车
+    priority: P0
+    type: 边界
+    scenario: 数量达到库存上限后加号不可再增
+    given: ["商品库存为 1983 且购物车数量可编辑"]
+    when: ["输入数量 1983", "再点击一次「+」"]
+    then: ["数量保持 1983", "「+」置灰或提示已达库存上限", "总价等于单价乘 1983"]
+  - id: LLS-CART-005
+    module: 购物车
+    priority: P0
+    type: 边界
+    scenario: 数量输入超库存、0、负数与非数字被拦截
+    given: ["商品库存为 1983"]
+    when: ["输入 999999", "输入 0", "输入 -1", "输入 abc"]
+    then: ["超库存回退或提示库存不足", "0 与 -1 回退到 1", "非数字回退为合法整数且总价不按非法值计算"]
+  - id: LLS-CART-006
+    module: 购物车
+    priority: P1
+    type: 边界
+    scenario: 数量减到 1 时减号置灰且不出现 0
+    given: ["购物车商品数量为 2"]
+    when: ["点击「-」直到数量为 1", "再点击一次「-」"]
+    then: ["数量保持 1", "减号置灰或提示最小 1 件", "小计等于单价"]
+  - id: LLS-CART-007
+    module: 购物车
+    priority: P0
+    type: 正向
+    scenario: 勾选与取消勾选后总价实时重算
+    given: ["购物车有 2 件不同价格的商品"]
+    when: ["取消勾选其中 1 件", "重新勾选该商品"]
+    then: ["取消后总价等于剩余勾选商品金额之和", "重新勾选后总价恢复", "已选件数同步变化"]
+  - id: LLS-CART-009
+    module: 购物车
+    priority: P1
+    type: 正向
+    scenario: 删除单件与清空确认取消正确
+    given: ["购物车有 3 件商品"]
+    when: ["删除 1 件", "点击清空购物车并在确认框点击取消"]
+    then: ["删除后行数减 1", "取消清空后商品不被删除", "角标与行数一致"]
+  - id: LLS-CART-011
+    module: 购物车
+    priority: P0
+    type: 负向
+    scenario: 下架或售罄商品进入失效区且不可结算
+    given: ["购物车中存在已下架或库存为 0 的商品"]
+    when: ["刷新购物车", "尝试勾选失效商品"]
+    then: ["展示「无货」或「已下架」提示", "失效商品不可勾选", "总价不包含失效商品"]
+  - id: LLS-CART-013
+    module: 购物车
+    priority: P0
+    type: 负向
+    scenario: 库存不足时提示最大可购数量并拦截结算
+    given: ["购物车商品数量为 2 且库存变为 1"]
+    when: ["刷新购物车并点击结算"]
+    then: ["提示「库存不足，最多可购 1 件」", "数量调整或结算被拦截"]
+  - id: LLS-CART-008
+    module: 购物车
+    priority: P1
+    type: 异常
+    scenario: 全选、全不选与半选状态互斥正确
+    given: ["购物车有 3 件有效商品"]
+    when: ["点击全选", "点击全不选", "只勾选其中 1 件"]
+    then: ["全选后所有有效商品被勾选", "全不选后总价为 ￥0.00", "部分勾选时全选框为半选态"]
+  - id: LLS-CART-010
+    module: 购物车
+    priority: P0
+    type: 异常
+    scenario: 未登录访问购物车跳登录且携带回跳地址
+    given: ["清除 cookie 的匿名会话"]
+    when: ["直接访问 /cart"]
+    then: ["跳转登录页且 rePath 参数含 /cart", "不在购物车页展示账号数据"]
+
+  # ---------- 结算、下单与支付 ----------
+  - id: LLS-ORDER-001
+    module: 结算下单与支付
+    priority: P0
+    type: 正向
+    scenario: 立即购买提交订单并支付成功
+    given: ["已登录、有默认收货地址、商品库存充足、余额充足"]
+    when: ["点击立即购买", "确认地址与金额后提交订单", "在收银台完成支付"]
+    then: ["收银台提示「订单提交成功，请尽快付款！」", "支付后订单状态为待发货", "应付金额等于商品总价加运费减优惠"]
+  - id: LLS-ORDER-003
+    module: 结算下单与支付
+    priority: P0
+    type: 正向
+    scenario: 结算页地址切换与新增地址回显正确
+    given: ["账号有 2 个收货地址"]
+    when: ["在结算页切换收货人", "新增一个地址后返回结算页"]
+    then: ["选中地址随切换变化", "新地址出现在可选列表", "默认地址唯一"]
+  - id: LLS-ORDER-010
+    module: 结算下单与支付
+    priority: P0
+    type: 正向
+    scenario: 结算页商品总价、优惠与应付金额逐项一致
+    given: ["结算页含 1 件商品与可选优惠券"]
+    when: ["读取商品总额、优惠与应付金额"]
+    then: ["应付等于商品总额减优惠加运费", "应付金额与底部提交区展示一致", "不出现负数应付"]
+  - id: LLS-ORDER-004
+    module: 结算下单与支付
+    priority: P1
+    type: 边界
+    scenario: 收货地址手机号、姓名与详细地址边界校验
+    given: ["在新增收货地址表单"]
+    when: ["输入 10 位手机号提交", "输入 11 位手机号提交", "输入超长姓名与含特殊字符的详细地址"]
+    then: ["10 位手机号提示格式错误且不保存", "11 位手机号保存成功", "超长或特殊字符有提示且已填内容不丢失"]
+  - id: LLS-ORDER-009
+    module: 结算下单与支付
+    priority: P1
+    type: 边界
+    scenario: 发票类型切换与字段校验
+    given: ["结算页可编辑发票信息"]
+    when: ["选择增值税专用发票但不填税号", "切换为电子普通发票并填写抬头"]
+    then: ["专票缺税号提示并阻止提交", "普票抬头保存成功且发票金额等于实付"]
+  - id: LLS-ORDER-006
+    module: 结算下单与支付
+    priority: P0
+    type: 边界
+    scenario: 优惠券门槛不足与满足门槛的抵扣结果
+    given: ["持有满 100 减 10 的平台券"]
+    when: ["用金额 69 元的商品结算并查看该券", "改用金额 222 元的商品结算并使用该券"]
+    then: ["69 元时该券不可用或提示差额", "222 元时可用并减 10，应付为 212"]
+  - id: LLS-ORDER-020
+    module: 结算下单与支付
+    priority: P1
+    type: 异常
+    scenario: 结算页停留期间商品失效后提交被拦截
+    given: ["结算页已加载且商品库存被置 0 或下架"]
+    when: ["点击提交订单"]
+    then: ["提示具体失效原因并停留在结算页", "不生成订单"]
+  - id: LLS-ORDER-019
+    module: 结算下单与支付
+    priority: P0
+    type: 异常
+    scenario: 重复点击提交订单只生成一个订单
+    given: ["结算页已填写完整且购物车有 1 件商品"]
+    when: ["连续点击「提交订单」3 次"]
+    then: ["只生成 1 个新订单", "待付款列表中该商品订单数只增加 1"]
+
+  # ---------- 个人中心、订单履约与售后 ----------
+  - id: LLS-UC-001
+    module: 个人中心订单售后
+    priority: P0
+    type: 正向
+    scenario: 订单列表默认全部且按时间倒序
+    given: ["账号存在多笔订单"]
+    when: ["进入我的订单"]
+    then: ["「全部订单」标签选中", "订单号按创建时间倒序", "订单金额与卡片展示一致"]
+  - id: LLS-UC-002
+    module: 个人中心订单售后
+    priority: P0
+    type: 正向
+    scenario: 订单 Tab 筛选结果与计数一致
+    given: ["账号有待付款、待收货、已完成或已关闭订单"]
+    when: ["依次点击待付款、待收货、已完成"]
+    then: ["每个标签只展示对应状态订单", "无数据时展示空态", "标签选中态与当前列表匹配"]
+  - id: LLS-UC-004
+    module: 个人中心订单售后
+    priority: P0
+    type: 负向
+    scenario: 按订单号搜索与不存在订单号空态
+    given: ["账号存在订单 O 开头单号"]
+    when: ["搜索完整订单号", "搜索不存在的 19 位订单号"]
+    then: ["完整单号精确命中 1 条", "不存在时展示空态且不报错"]
+  - id: LLS-UC-005
+    module: 个人中心订单售后
+    priority: P0
+    type: 正向
+    scenario: 订单详情字段与列表一致
+    given: ["账号存在一笔已关闭订单"]
+    when: ["打开该订单详情"]
+    then: ["详情订单号与列表一致", "展示商品名、单价、数量与付款状态", "应付金额与商品小计一致"]
+  - id: LLS-UC-006
+    module: 个人中心订单售后
+    priority: P0
+    type: 正向
+    scenario: 取消待付款订单后状态变为已取消
+    given: ["账号有一笔待付款订单"]
+    when: ["在订单详情或列表点击取消订单并选择原因"]
+    then: ["订单状态变为已取消", "取消原因记录在订单日志", "订单不再可支付"]
+  - id: LLS-UC-010
+    module: 个人中心订单售后
+    priority: P0
+    type: 负向
+    scenario: 售后入口按订单状态正确展示
+    given: ["账号存在已关闭或未发货订单"]
+    when: ["查看该订单详情", "进入我的售后"]
+    then: ["不可售后订单不展示「申请售后」入口", "售后列表按状态展示或空态"]
+  - id: LLS-UC-019
+    module: 个人中心订单售后
+    priority: P1
+    type: 正向
+    scenario: 新增收货地址、默认地址唯一与删除
+    given: ["账号已有 1 个地址"]
+    when: ["新增一个地址并保存", "将其设为默认"]
+    then: ["新地址出现在地址列表", "默认地址标签唯一", "删除后列表数量减 1"]
+  - id: LLS-UC-020
+    module: 个人中心订单售后
+    priority: P0
+    type: 异常
+    scenario: 手机号脱敏与退出登录后不可访问订单页
+    given: ["已登录并访问地址页与订单详情"]
+    when: ["查看手机号展示", "退出登录后直接访问 /home/MyOrder"]
+    then: ["手机号中间四位以 * 掩码展示", "退出后访问订单页跳转登录页", "不展示上一账号订单数据"]
+  - id: LLS-UC-003
+    module: 个人中心订单售后
+    priority: P1
+    type: 异常
+    scenario: 快速切换订单 Tab 不展示上一个 Tab 的脏数据
+    given: ["订单列表包含多种状态订单"]
+    when: ["连续切换全部订单、待付款、待收货"]
+    then: ["当前标签选中态与列表一致", "列表不展示上一个标签的状态文案"]
+  - id: LLS-UC-008
+    module: 个人中心订单售后
+    priority: P1
+    type: 异常
+    scenario: 确认收货后订单完成且重复确认幂等
+    given: ["账号有一笔已发货待收货订单"]
+    when: ["点击确认收货并确认", "再次尝试确认收货"]
+    then: ["订单状态变为已完成", "确认收货按钮消失", "重复确认不产生二次状态变化"]
+
+  # ---------- 会员资产与权益 ----------
+  - id: LLS-ASSET-001
+    module: 会员资产与权益
+    priority: P1
+    type: 正向
+    scenario: 优惠券按使用状态分类展示
+    given: ["账号持有未使用券"]
+    when: ["进入我的优惠券并切换未使用、已使用、已过期"]
+    then: ["未使用券展示面额、门槛、范围与有效期", "已使用与已过期为空态或仅展示对应状态", "过期券不展示「立即使用」"]
+  - id: LLS-ASSET-002
+    module: 会员资产与权益
+    priority: P0
+    type: 负向
+    scenario: 同一优惠券重复领取只增加 1 张
+    given: ["领券中心存在限领 1 张的券"]
+    when: ["首次领取", "再次领取同一张券"]
+    then: ["首次领取成功", "再次领取提示已达上限", "我的优惠券中该券数量为 1"]
+  - id: LLS-ASSET-005
+    module: 会员资产与权益
+    priority: P1
+    type: 正向
+    scenario: 积分余额与积分日志一致
+    given: ["账号有积分收入记录"]
+    when: ["进入我的积分"]
+    then: ["剩余积分等于累计获得减累计消耗", "日志首条变动值与余额口径一致"]
+  - id: LLS-ASSET-009
+    module: 会员资产与权益
+    priority: P1
+    type: 正向
+    scenario: 等级页展示当前等级、经验值与升级差值
+    given: ["账号当前为青铜会员且经验值 0"]
+    when: ["进入我的等级"]
+    then: ["展示「青铜会员」", "展示当前经验值 0", "展示距下一等级还差 500 经验值"]
+  - id: LLS-ASSET-017
+    module: 会员资产与权益
+    priority: P1
+    type: 正向
+    scenario: 个人中心与资产各页数据一致
+    given: ["同一账号"]
+    when: ["依次打开个人中心、我的优惠券、我的积分、我的等级、我的余额"]
+    then: ["券数量、积分、等级、余额在各页展示一致", "刷新后仍一致"]
+  - id: LLS-ASSET-012
+    module: 会员资产与权益
+    priority: P0
+    type: 负向
+    scenario: 礼品卡错误兑换码被拒绝
+    given: ["持有一个不存在的兑换码"]
+    when: ["在我的礼品卡提交卡号与兑换码"]
+    then: ["提示兑换码无效或兑换失败", "礼品卡列表数量不变"]
+  - id: LLS-ASSET-010
+    module: 会员资产与权益
+    priority: P0
+    type: 负向
+    scenario: 积分商品积分不足或售罄被拦截
+    given: ["存在积分商品且账号积分不足"]
+    when: ["在积分商城打开该商品", "点击积分购买"]
+    then: ["提示积分不足并拦截", "售罄时提示已售罄", "不生成订单"]
+  - id: LLS-ASSET-008
+    module: 会员资产与权益
+    priority: P0
+    type: 边界
+    scenario: 经验值阈值 T-1、T、T+1 触发等级变化
+    given: ["等级阈值为 T，账号经验值可造数"]
+    when: ["将经验值置为 T-1", "置为 T", "置为 T+1"]
+    then: ["T-1 时保持当前等级", "T 与 T+1 时为下一等级", "进度与差值展示正确"]
+
+# 明确不转写（非 UI 可判定 / 依赖接口抓包、并发、回调、DB 或商家侧操作）
+excluded:
+  - {id: LLS-HOME-003, reason: "依赖运营楼层/轮播配置，属数据配置验证"}
+  - {id: LLS-HOME-007, reason: "XSS/注入与日志验证需接口与日志侧"}
+  - {id: LLS-HOME-008, reason: "店铺内搜索需店铺页路由与多店铺数据，当前环境未连通"}
+  - {id: LLS-HOME-009, reason: "品牌多选与只看有货筛选依赖未稳定组件，先不转写"}
+  - {id: LLS-HOME-011, reason: "弱网/Offline 需网络模拟，稳定性不可控"}
+  - {id: LLS-HOME-012, reason: "需后台下线楼层与替换失效图片"}
+  - {id: LLS-GOODS-008, reason: "满减活动需后台配置门槛与优惠"}
+  - {id: LLS-GOODS-009, reason: "秒杀限购需活动库存与限购配置造数"}
+  - {id: LLS-GOODS-010, reason: "秒杀未开始/已结束状态需活动状态造数"}
+  - {id: LLS-GOODS-011, reason: "拼团需支付与第二账号，跨账号链路"}
+  - {id: LLS-GOODS-012, reason: "拼团失败退款与资产回滚属接口/任务验证"}
+  - {id: LLS-GOODS-013, reason: "砍价需好友帮砍与多账号"}
+  - {id: LLS-GOODS-016, reason: "抓包篡改 skuId/价格属接口安全验证"}
+  - {id: LLS-CART-012, reason: "改价后刷新需后台改价造数"}
+  - {id: LLS-CART-014, reason: "等待秒杀倒计时结束违反禁固定等待，且依赖活动时间"}
+  - {id: LLS-CART-015, reason: "与 GOODS-007/ORDER-006 券链路重叠，避免重复造数"}
+  - {id: LLS-CART-016, reason: "篡改数量/勾选/价格属接口验证"}
+  - {id: LLS-CART-018, reason: "H5 购物车路由未在本环境确认"}
+  - {id: LLS-ORDER-002, reason: "多店铺结算需两个店铺同时有货"}
+  - {id: LLS-ORDER-005, reason: "运费模板需后台按件/按重/包邮配置"}
+  - {id: LLS-ORDER-007, reason: "平台券与店铺券叠加互斥需两类券共存造数"}
+  - {id: LLS-ORDER-008, reason: "环境无可用礼品卡"}
+  - {id: LLS-ORDER-011, reason: "余额支付需支付密码与并发场景"}
+  - {id: LLS-ORDER-012, reason: "微信/支付宝回调需沙箱与验签"}
+  - {id: LLS-ORDER-013, reason: "支付失败/超时依赖支付渠道与超时任务"}
+  - {id: LLS-ORDER-014, reason: "超时关单任务属后端任务验证"}
+  - {id: LLS-ORDER-015, reason: "重复回调幂等属接口验证"}
+  - {id: LLS-ORDER-016, reason: "回调延迟补偿属接口/任务验证"}
+  - {id: LLS-ORDER-017, reason: "抓包篡改金额属接口安全验证"}
+  - {id: LLS-ORDER-018, reason: "并发抢库存需 10 个账号并发"}
+  - {id: LLS-ORDER-021, reason: "五本账终态需接口回查"}
+  - {id: LLS-ORDER-022, reason: "活动订单类型隔离需秒杀/拼团/砍价数据"}
+  - {id: LLS-UC-007, reason: "取消后库存/券/礼品卡回滚需接口回查"}
+  - {id: LLS-UC-009, reason: "多包裹与部分发货需商家侧发货造数"}
+  - {id: LLS-UC-011, reason: "售后提交需商家侧已发货并可售后订单"}
+  - {id: LLS-UC-012, reason: "同上，售后数量校验依赖可售后订单"}
+  - {id: LLS-UC-013, reason: "商家拒绝售后需管理端操作"}
+  - {id: LLS-UC-014, reason: "退货/仅退款全流程需商家与平台端"}
+  - {id: LLS-UC-015, reason: "退款金额与资产回滚需接口与流水核对"}
+  - {id: LLS-UC-016, reason: "退款幂等属接口验证"}
+  - {id: LLS-UC-017, reason: "评价需已完成订单，且经验值规则需后台配置"}
+  - {id: LLS-UC-018, reason: "投诉需已支付订单与凭证上传组合"}
+  - {id: LLS-ASSET-003, reason: "券门槛/范围/有效期边界需指定商品与时间造数"}
+  - {id: LLS-ASSET-004, reason: "券核销返还只执行一次属接口幂等验证"}
+  - {id: LLS-ASSET-006, reason: "消费得积分/经验值需支付与退款，规则依赖后台配置"}
+  - {id: LLS-ASSET-007, reason: "注册/签到/绑定微信等任务需多账号与新数据"}
+  - {id: LLS-ASSET-011, reason: "积分兑换退款回滚属接口验证"}
+  - {id: LLS-ASSET-013, reason: "环境无可用礼品卡"}
+  - {id: LLS-ASSET-014, reason: "充值回调幂等需支付渠道"}
+  - {id: LLS-ASSET-015, reason: "提现需真实姓名、银行卡与审核端操作"}
+  - {id: LLS-ASSET-016, reason: "余额并发扣减属接口验证"}
+  - {id: LLS-ASSET-018, reason: "满减+券+礼品卡叠加需满减与礼品卡数据"}

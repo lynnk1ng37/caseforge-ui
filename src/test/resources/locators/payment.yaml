@@ -1,0 +1,36 @@
+# 收银台页（/payment）定位器（probe 实测 2026-11-12）
+- id: payment.success_tip
+  page: payment
+  primary: {by: text, value: "订单提交成功，请尽快付款！", exact: false}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: payment.amount_label
+  page: payment
+  primary: {by: text, value: "应付金额", exact: false}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: payment.balance_option
+  page: payment
+  # 收银台支付方式：支付宝 / 微信 / 余额支付（页脚也有「余额支付」文案，取第一个即可）
+  primary: {by: text, value: "余额支付", exact: true}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: payment.confirm_ok
+  page: payment
+  primary: {by: css, value: ".ivu-modal-confirm-footer .ivu-btn-primary"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: payment.done_flag
+  page: payment
+  primary: {by: text, value: "查看订单"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

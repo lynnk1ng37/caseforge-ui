@@ -1,0 +1,59 @@
+# 结算页（/pay）定位器（probe 实测 2026-11-12）
+- id: checkout.page_flag
+  page: checkout
+  # 不能用「填写订单信息」：它同时出现在购物车页的步骤条「2.填写订单信息」，
+  # 无法区分页面。改用结算页独有的「收货人信息」。
+  primary: {by: text, value: "收货人信息", exact: false}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.address_selected
+  page: checkout
+  primary: {by: css, value: ".ivu-radio-wrapper-checked"}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.submit
+  page: checkout
+  primary: {by: css, value: "div.pay", text: "提交订单"}
+  fallbacks:
+    - {by: text, value: "提交订单"}
+  verified_at: "2026-11-22"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.goods_item
+  page: checkout
+  # 结算页商品行（含商品名、单价、数量）
+  primary: {by: css, value: ".goods-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.goods_price
+  page: checkout
+  primary: {by: css, value: ".goods-price"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.total_goods
+  page: checkout
+  primary: {by: text, value: "总商品金额", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: checkout.payable
+  page: checkout
+  primary: {by: text, value: "应付金额", exact: false}
+
+- id: checkout.payable_amount
+  page: checkout
+  # 页面里金额数值用 actrual-price（原文如此拼写）
+  primary: {by: css, value: ".actrual-price"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

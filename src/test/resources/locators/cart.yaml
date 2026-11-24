@@ -1,0 +1,186 @@
+# 购物车页（/cart）定位器（probe 实测 2026-11-12 / 2026-11-23）
+- id: cart.items
+  page: cart
+  # 非自营店铺分组的容器 class 与自营店不同，行级 .goods-item 才是稳定锚点
+  primary: {by: css, value: ".goods-item"}
+  fallbacks:
+    - {by: css, value: ".cart-goods-items .goods-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.empty_tip
+  page: cart
+  primary: {by: css, value: ".cart-empty"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.selected_count
+  page: cart
+  # 商品角标在所有页面都不刷新（BUG-3），购物车页自身的「已选择 N 件商品」是可靠口径
+  primary: {by: text, value: "已选择", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.total_amount
+  page: cart
+  primary: {by: css, value: ".total-price"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.checkout
+  page: cart
+  primary: {by: css, value: "div.pay", text: "去结算"}
+  fallbacks:
+    - {by: text, value: "去结算"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.item_name
+  page: cart
+  primary: {by: css, value: ".cart-goods-items .goods-title"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.quantity_input
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-input-number-input"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.quantity_plus
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-input-number-handler-up"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.quantity_minus
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-input-number-handler-down"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.row_checkbox
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-checkbox-wrapper"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.row_checked
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-checkbox-checked"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.select_all
+  page: cart
+  primary: {by: css, value: ".ivu-checkbox-wrapper", text: "全选", nth: 0}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.item_delete
+  page: cart
+  primary: {by: css, value: ".goods-item .ivu-btn", text: "删除"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.clear_all
+  page: cart
+  primary: {by: text, value: "清空购物车", exact: true}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.clear_confirm
+  page: cart
+  primary: {by: css, value: ".ivu-modal-confirm", text: "清空购物车"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.clear_cancel
+  page: cart
+  # 必须点到按钮本身：footer 容器整块也「包含」取消/确定文案，点容器不会触发任何动作
+  primary: {by: css, value: ".ivu-modal-confirm-footer .ivu-btn-text"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.confirm_ok
+  page: cart
+  primary: {by: css, value: ".ivu-modal-confirm-footer .ivu-btn-primary"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.badge
+  page: cart
+  # 顶部购物车角标（文案形如「购物车(1)」）
+  primary: {by: css, value: "a[href='/cart']", text: "购物车"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.step_title
+  page: cart
+  # 结算步骤条「1.我的购物车」
+  primary: {by: text, value: "我的购物车", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.item_price
+  page: cart
+  primary: {by: css, value: ".goods-item .width_150", nth: 0}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.item_subtotal
+  page: cart
+  primary: {by: css, value: ".goods-item .width_150", nth: 1}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.store_name
+  page: cart
+  # 每个店铺分组头部都有「去店铺」入口，用它数店铺数
+  primary: {by: css, value: ".go-shop-page"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.select_all_title
+  page: cart
+  # 表头全选框（页脚还有一个同名全选，用 nth 区分）
+  primary: {by: css, value: ".cart-goods-title .ivu-checkbox-wrapper"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.select_all_checked
+  page: cart
+  primary: {by: css, value: ".cart-goods-title .ivu-checkbox-checked"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: cart.indeterminate
+  page: cart
+  primary: {by: css, value: ".ivu-checkbox-indeterminate"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

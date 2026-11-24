@@ -1,0 +1,52 @@
+# 全局通用组件定位器（probe 实测 2026-11-13 / 2026-11-23）
+- id: common.toast
+  page: common
+  # iView 的全局消息提示，约 3 秒后自动消失，必须在出现后立刻读取
+  primary: {by: css, value: ".ivu-message-notice-content"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_cart
+  page: common
+  # 顶部购物车入口（链接带数量角标）
+  primary: {by: css, value: "a[href='/cart']"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_orders
+  page: common
+  primary: {by: css, value: "span.nav-item", text: "我的订单"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_login
+  page: common
+  primary: {by: css, value: "a.nav-item", text: "请登录"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_register
+  page: common
+  primary: {by: css, value: "a.nav-item", text: "立即注册"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_coupon_entry
+  page: common
+  # 顶部导航条里的「优惠券」是 li.nav-lis，不是下拉菜单里同名的隐藏项
+  primary: {by: css, value: "li.nav-lis", text: "优惠券"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: common.nav_seckill_entry
+  page: common
+  primary: {by: css, value: "li.nav-lis", text: "秒杀"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe

@@ -1,0 +1,21 @@
+# 积分商品详情页（/pointGoodsDetail?id=）定位器（probe 实测 2026-11-24）
+- id: point_goods.page_flag
+  page: point_goods
+  primary: {by: text, value: "积分购买"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: point_goods.buy_button
+  page: point_goods
+  primary: {by: text, value: "积分购买", exact: true}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: point_goods.points_text
+  page: point_goods
+  primary: {by: text, value: "积", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

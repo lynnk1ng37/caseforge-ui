@@ -1,0 +1,44 @@
+# 商品列表 / 搜索结果页（/goodsList）定位器（probe 实测 2026-11-23）
+- id: goods_list.item
+  page: goods_list
+  primary: {by: css, value: ".goods-list .goods-show-info"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_list.name
+  page: goods_list
+  primary: {by: css, value: ".goods-show-detail"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_list.price
+  page: goods_list
+  primary: {by: css, value: ".goods-show-price"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_list.keyword_label
+  page: goods_list
+  # 结果区顶部「全部结果 “关键字”」整块，用于确认关键字已生效
+  primary: {by: css, value: ".item-class-show"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_list.active_sort
+  page: goods_list
+  primary: {by: css, value: ".goods-list-tool-active"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_list.empty_tip
+  page: goods_list
+  # 无结果时结果区仍渲染容器，页脚显示「共 0 条」
+  primary: {by: css, value: ".ivu-page-total"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe

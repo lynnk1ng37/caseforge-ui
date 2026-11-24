@@ -1,0 +1,109 @@
+# 商品详情页定位器（probe 实测 2026-11-12 / 2026-11-23）
+- id: goods_detail.page_flag
+  page: goods_detail
+  # 详情页共有文案，不依赖「是否可购买」（不可购买商品没有加购按钮）
+  primary: {by: text, value: "累计评价", exact: false}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.add_to_cart
+  page: goods_detail
+  primary: {by: role, role: button, name: "加入购物车"}
+  fallbacks:
+    - {by: css, value: "button.ivu-btn-error"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.buy_now
+  page: goods_detail
+  primary: {by: role, role: button, name: "立即购买"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.login_modal
+  page: goods_detail
+  primary: {by: css, value: ".ivu-modal-confirm"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.login_modal_tip
+  page: goods_detail
+  primary: {by: text, value: "请登录后执行此操作", exact: false}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.added_tip
+  page: goods_detail
+  primary: {by: text, value: "商品已成功加入购物车！"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.title
+  page: goods_detail
+  primary: {by: css, value: ".item-detail-title"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.price
+  page: goods_detail
+  primary: {by: css, value: ".item-price"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.sku_row
+  page: goods_detail
+  primary: {by: css, value: ".item-select-row"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.stock_block
+  page: goods_detail
+  # 数量选择区里的「库存1983」文本块
+  primary: {by: css, value: ".item-select", text: "库存"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.quantity_input
+  page: goods_detail
+  primary: {by: css, value: ".item-select .ivu-input-number-input"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.remarks_count
+  page: goods_detail
+  primary: {by: css, value: ".item-remarks-num"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.remarks_tab
+  page: goods_detail
+  primary: {by: text, value: "商品评价", exact: true}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.type_tag
+  page: goods_detail
+  primary: {by: css, value: ".ivu-tag-text", text: "实物商品"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: goods_detail.off_shelf_tip
+  page: goods_detail
+  primary: {by: text, value: "当前商品已下架"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

@@ -1,0 +1,8 @@
+target/
+ui_test_dwp_temp/artifacts/
+ui_test_dwp_temp/probe/
+allure-results/
+allure-results-ui/
+.idea/
+*.iml
+.DS_Store

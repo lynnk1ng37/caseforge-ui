@@ -1,0 +1,302 @@
+route: /index.html
+url: http://127.0.0.1:8899/index.html
+title: probe fixture
+collected_at: '2026-11-24'
+collect_version: 2
+steps:
+- step: click=text:展开详情
+  ok: true
+  frame: iframe[0]
+frames:
+- path: top
+  url: http://127.0.0.1:8899/index.html
+- path: iframe[0]
+  url: http://127.0.0.1:8899/frame.html
+- path: iframe[0]/iframe[0]
+  url: http://127.0.0.1:8899/frame2.html
+frame_errors: []
+frame_truncated: false
+truncated: false
+off_canvas_count: 1
+shadow_hosts: 3
+l1_rejected_count: 0
+elements:
+- tag: button
+  role: button
+  name: 主文档按钮
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: main-btn
+  cls: ''
+  class_has_hash: false
+  text: 主文档按钮
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 8
+    y: 295
+    w: 83
+  parent_chain:
+  - BUTTON.
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 0
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: a
+  role: link
+  name: 主文档链接
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: null
+  cls: nav-link
+  class_has_hash: false
+  text: 主文档链接
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 96
+    y: 295
+    w: 80
+  parent_chain:
+  - A.nav-link
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 1
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 展开更多
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: expand
+  cls: ''
+  class_has_hash: false
+  text: 展开更多
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 8
+    y: 345
+    w: 69
+  parent_chain:
+  - BUTTON.
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 2
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 影子按钮
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: shadow-btn
+  cls: ''
+  class_has_hash: false
+  text: 影子按钮
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 611
+    y: 295
+    w: 69
+  parent_chain:
+  - BUTTON.
+  - X-WIDGET.
+  - BODY.
+  - HTML.
+  shadow_dom: true
+  in_shadow: true
+  shadow_depth: 1
+  shadow_host_chain:
+  - x-widget.
+  index: 3
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 展开影子内容
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: shadow-expand
+  cls: ''
+  class_has_hash: false
+  text: 展开影子内容
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 680
+    y: 295
+    w: 96
+  parent_chain:
+  - BUTTON.
+  - X-WIDGET.
+  - BODY.
+  - HTML.
+  shadow_dom: true
+  in_shadow: true
+  shadow_depth: 1
+  shadow_host_chain:
+  - x-widget.
+  index: 4
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 深层影子按钮
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: deep-shadow-btn
+  cls: ''
+  class_has_hash: false
+  text: 深层影子按钮
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 8
+    y: 320
+    w: 96
+  parent_chain:
+  - BUTTON.
+  - X-INNER.
+  - DIV.wrap
+  - X-OUTER.
+  - BODY.
+  - HTML.
+  shadow_dom: true
+  in_shadow: true
+  shadow_depth: 2
+  shadow_host_chain:
+  - x-outer.
+  - x-inner.
+  index: 5
+  frame: top
+  frame_url: http://127.0.0.1:8899/index.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 框架按钮
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: frame-btn
+  cls: ''
+  class_has_hash: false
+  text: 框架按钮
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 8
+    y: 8
+    w: 69
+  parent_chain:
+  - BUTTON.
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 6
+  frame: iframe[0]
+  frame_url: http://127.0.0.1:8899/frame.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 展开详情
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: frame-expand
+  cls: ''
+  class_has_hash: false
+  text: 展开详情
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 83
+    y: 8
+    w: 69
+  parent_chain:
+  - BUTTON.
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 7
+  frame: iframe[0]
+  frame_url: http://127.0.0.1:8899/frame.html
+  suggested_level: L1
+  l1_verified: true
+- tag: button
+  role: button
+  name: 深层框架按钮
+  aria_label: null
+  placeholder: null
+  testid: null
+  id: frame2-btn
+  cls: ''
+  class_has_hash: false
+  text: 深层框架按钮
+  disabled: false
+  visible: true
+  off_canvas: false
+  rect:
+    x: 8
+    y: 8
+    w: 96
+  parent_chain:
+  - BUTTON.
+  - BODY.
+  - HTML.
+  shadow_dom: false
+  in_shadow: false
+  shadow_depth: 0
+  shadow_host_chain: []
+  index: 8
+  frame: iframe[0]/iframe[0]
+  frame_url: http://127.0.0.1:8899/frame2.html
+  suggested_level: L1
+  l1_verified: true

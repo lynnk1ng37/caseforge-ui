@@ -1,0 +1,59 @@
+# 优惠券相关（领券中心 /coupon、我的优惠券 /home/Coupons）定位器（probe 实测 2026-11-23）
+- id: coupon.center_flag
+  page: coupon
+  primary: {by: text, value: "领券中心", exact: true}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.center_item
+  page: coupon
+  primary: {by: css, value: ".coupon-list .coupon-item"}
+  fallbacks:
+    - {by: css, value: ".coupon-center .coupon-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.receive_btn
+  page: coupon
+  primary: {by: text, value: "立即领取", exact: true}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.my_flag
+  page: coupon
+  primary: {by: text, value: "优惠券列表", exact: true}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.my_item
+  page: coupon
+  primary: {by: css, value: ".coupon-item"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.use_btn
+  page: coupon
+  primary: {by: css, value: ".c-right", text: "立即使用"}
+  verified_at: "2026-11-23"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.my_tab
+  page: coupon
+  # 我的优惠券页签：未使用 / 已使用 / 已过期（与订单页签同名 class，用父级区分）
+  primary: {by: css, value: ".cardTabs .cardTabsItem"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: coupon.my_tab_active
+  page: coupon
+  primary: {by: css, value: ".cardTabs .cardTabsItem.active"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

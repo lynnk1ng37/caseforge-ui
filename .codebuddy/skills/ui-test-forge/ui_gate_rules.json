@@ -1,0 +1,74 @@
+{
+  "$comment": "UI 自动化机械门禁规则（单一事实源）。技术栈：Playwright Java + Cucumber BDD。check_ui_gate.py 只做规则引擎，改规则不改代码。",
+  "version": 2,
+  "scopes": [
+    {
+      "name": "test_layer",
+      "globs": ["src/test/java/com/lili/ui/steps/**/*.java"],
+      "forbidden": [
+        {"pattern": "page\\.locator\\s*\\(", "reason": "用例层禁止直接定位，必须调用 page object 方法"},
+        {"pattern": "page\\.evaluate\\s*\\(", "reason": "用例层禁止直接操作 DOM"},
+        {"pattern": "page\\.click\\s*\\(", "reason": "用例层禁止直接点击"},
+        {"pattern": "page\\.fill\\s*\\(", "reason": "用例层禁止直接填写"},
+        {"pattern": "page\\.navigate\\s*\\(", "reason": "用例层禁止直接跳转，必须用 page object 的 open()"},
+        {"pattern": "LocatorRegistry\\.resolve\\s*\\(", "reason": "用例层禁止自行解析定位器，只能调 page object"},
+        {"pattern": "Thread\\.sleep\\s*\\(", "reason": "禁止固定等待，使用 Web-First 断言"},
+        {"pattern": "page\\.waitForTimeout\\s*\\(", "reason": "禁止固定等待，使用 Web-First 断言"},
+        {"pattern": "navigate\\(\\s*\"https?://", "reason": "禁止硬编码 URL，必须走 routes.yaml + base_url"},
+        {"pattern": "assertTrue\\s*\\(\\s*true\\s*\\)", "reason": "恒真断言，属假绿"}
+      ],
+      "exemptions": {"ignoreImportLines": true}
+    },
+    {
+      "name": "page_layer",
+      "globs": [
+        "src/test/java/com/lili/ui/pages/**/*.java",
+        "src/test/java/com/lili/ui/flows/**/*.java"
+      ],
+      "forbidden": [
+        {"pattern": "Thread\\.sleep\\s*\\(", "reason": "禁止固定等待，使用 Web-First 断言"},
+        {"pattern": "page\\.waitForTimeout\\s*\\(", "reason": "禁止固定等待，使用 Web-First 断言"},
+        {"pattern": "^\\s*import\\s+org\\.assertj", "reason": "page / flow 层禁止业务断言（AssertJ），断言只能在 steps 层"},
+        {"pattern": "^\\s*import\\s+org\\.junit", "reason": "page / flow 层禁止业务断言（JUnit），断言只能在 steps 层"},
+        {"pattern": "(?<!Playwright)Assertions\\.assert", "reason": "page / flow 层只允许 PlaywrightAssertions 做就绪等待，禁用 org.junit Assertions"},
+        {"pattern": "\\bAssert\\.", "reason": "page / flow 层禁止 JUnit Assert，断言只能在 steps 层"},
+        {"pattern": "navigate\\(\\s*\"https?://", "reason": "禁止硬编码 URL，必须走 routes.yaml + base_url"}
+      ],
+      "exemptions": {"ignoreImportLines": true}
+    },
+    {
+      "name": "locator_layer",
+      "globs": ["src/test/resources/locators/**/*.yaml"],
+      "forbidden": [
+        {"pattern": "xpath:", "reason": "XPath 为 L5 兜底，需在 id 后加 # allowed-xpath: 理由 注释才允许"}
+      ],
+      "exemptions": {}
+    },
+    {
+      "name": "feature_layer",
+      "globs": ["src/test/resources/features/**/*.feature"],
+      "forbidden": [
+        {"pattern": "class\\s*=", "reason": "feature 层禁止出现选择器，定位器唯一来源是 locators/*.yaml"},
+        {"pattern": "xpath", "reason": "feature 层禁止出现选择器"},
+        {"pattern": "https?://", "reason": "feature 层禁止硬编码 URL，路由走 routes.yaml"},
+        {"pattern": "\\bBy\\.", "reason": "feature 层禁止出现 Selenium 定位 API"}
+      ],
+      "exemptions": {}
+    }
+  ],
+  "checks": {
+    "require_checklist": true,
+    "require_confirm": true,
+    "check_scenario_ratio": true,
+    "check_pending_items": true,
+    "test_must_have_assertion": {
+      "enabled": true,
+      "func_pattern": "@(?:Given|When|Then|And|But|假设|假如|假定|当|那么|而且|并且|同时|但是)\\([^)]*\\)\\s*(?:@[^\\n]*\\s*)*public\\s+void\\s+(\\w+)\\s*\\(",
+      "assertion_hints": ["assertThat(", "Assert.", "assertThat ("]
+    },
+    "locator_selector_dup": {
+      "enabled": true,
+      "$comment": "G10：不同 id 的 primary 选择器复合键 (by+value/role+name+text+nth+exact) 归一化后全等即拦截；条目内加 # allowed-dup: 理由 豁免。"
+    }
+  }
+}

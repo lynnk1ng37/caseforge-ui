@@ -1,0 +1,59 @@
+# 会员资产页专属定位器（probe 实测 2026-11-24）
+# 券条目/按钮复用 coupon.yaml 的 coupon.my_item / coupon.use_btn，券页签见 coupon.my_tab，这里不重复登记。
+- id: asset.point_summary
+  page: point
+  # 同一块文案里同时有「剩余积分：10」与「累计获得：10」
+  primary: {by: text, value: "剩余积分", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.point_gained
+  page: point
+  # 「剩余积分」与「累计获得」是两个相邻独立节点，需要分别定位
+  primary: {by: text, value: "累计获得", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.point_log_first
+  page: point
+  primary: {by: css, value: ".ivu-table-tbody tr"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.grade_card
+  page: grade
+  primary: {by: css, value: ".gradeInfo"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.gift_card_no
+  page: gift_card
+  primary: {by: placeholder, value: "请输入卡号"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.gift_card_code
+  page: gift_card
+  primary: {by: placeholder, value: "请输入兑换码（卡密）"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.gift_card_redeem
+  page: gift_card
+  primary: {by: text, value: "兑换", exact: true}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: asset.money_balance
+  page: money
+  primary: {by: text, value: "账户余额", exact: false}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

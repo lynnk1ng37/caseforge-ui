@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>probe fixture</title>
+<style>
+  body { font-family: sans-serif; }
+  .offscreen { position: absolute; top: 0; left: 0; transform: translateX(-9999px); }
+</style>
+</head>
+<body>
+<h1>探针夹具</h1>
+
+<button id="main-btn">主文档按钮</button>
+<a href="/index.html" class="nav-link">主文档链接</a>
+
+<iframe name="inner" src="frame.html" width="420" height="220"></iframe>
+
+<x-widget></x-widget>
+<x-outer></x-outer>
+
+<button class="offscreen">抽屉里的按钮</button>
+<button style="display:none">隐藏按钮</button>
+<button id="expand">展开更多</button>
+
+<script>
+  customElements.define('x-widget', class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({mode: 'open'}).innerHTML =
+        '<button id="shadow-btn">影子按钮</button>'
+        + '<button id="shadow-expand">展开影子内容</button>';
+    }
+  });
+
+  // 先定义内层，外层构造时才升级得到
+  customElements.define('x-inner', class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({mode: 'open'}).innerHTML =
+        '<button id="deep-shadow-btn">深层影子按钮</button>';
+    }
+  });
+
+  customElements.define('x-outer', class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({mode: 'open'}).innerHTML =
+        '<div class="wrap"><x-inner></x-inner></div>';
+    }
+  });
+
+  // closed shadow：探针按设计进不去，作为反例保留
+  const closed = document.createElement('div');
+  document.body.appendChild(closed);
+  closed.attachShadow({mode: 'closed'}).innerHTML = '<button>关闭影子按钮</button>';
+</script>
+</body>
+</html>

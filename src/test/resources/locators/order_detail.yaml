@@ -1,0 +1,29 @@
+# 订单详情页（/home/OrderDetail?sn=）定位器（probe 实测 2026-11-24）
+- id: order_detail.container
+  page: order_detail
+  primary: {by: css, value: ".order-detail"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_detail.status_card
+  page: order_detail
+  # 第一块卡片首行是订单状态（如「已关闭」）
+  primary: {by: css, value: ".order-card"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_detail.price_block
+  page: order_detail
+  primary: {by: css, value: ".order-price"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe
+
+- id: order_detail.after_sale_entry
+  page: order_detail
+  primary: {by: text, value: "申请售后"}
+  verified_at: "2026-11-24"
+  verified_env: "local-127.0.0.1"
+  source: probe

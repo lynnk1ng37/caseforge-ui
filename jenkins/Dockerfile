@@ -1,0 +1,49 @@
+# Jenkins 单容器：Playwright 1.49.0 官方镜像 + JDK + Maven + Allure CLI
+#
+# 为什么用 mcr.microsoft.com/playwright:v1.49.0-jammy 而不是 jenkins/jenkins：
+#   - tag 与项目 pom 的 Playwright 1.49.0 对齐，/ms-playwright 下的 chromium 版本与 Java 客户端匹配
+#   - 浏览器路径、系统依赖（字体/中文字体/alsa 等）都是官方配好的，不需要手装 Chrome
+#   - Linux arm64 没有 Google Chrome 官方包，所以 BROWSER_CHANNEL 只能取 none
+#
+# 构建上下文（本目录）需要：Dockerfile、jenkins.war、allure-2.29.0.zip、m2-settings.xml
+FROM mcr.microsoft.com/playwright:v1.49.0-jammy
+
+USER root
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=C.UTF-8 \
+    TZ=Asia/Shanghai \
+    JENKINS_HOME=/var/jenkins_home
+
+# Jenkins 2.580.x 的 class 文件版本是 65，运行时必须 JDK 21（JDK 17 会在启动时报 UnsupportedClassVersionError）。
+# 项目本身仍然按 pom 的 release=17 编译，不受影响。
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openjdk-21-jdk maven unzip ca-certificates tzdata \
+ && rm -rf /var/lib/apt/lists/*
+
+# JAVA_HOME：用 readlink 解出真实路径，再断言 javac 存在。
+# arm64 上实际是 /usr/lib/jvm/java-21-openjdk-arm64；如果基础镜像架构变了，这里会构建失败而不是运行期才炸。
+RUN readlink -f "$(readlink -f "$(command -v java)")"
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-arm64
+RUN test -x "$JAVA_HOME/bin/javac" && java -version 2>&1 | head -3 && mvn -v | head -3
+
+# Allure CLI 2.29.x（与 pom 的 allure.version=2.29.1 同一条线）。
+# 装到 /opt/allure，由 Allure 插件的「全局工具配置 → Allure Commandline → 手动安装目录」指向它，
+# 避免插件运行期从 GitHub 在线下载（国内网络经常超时）。
+COPY allure-2.29.0.zip /tmp/
+RUN unzip -q /tmp/allure-2.29.0.zip -d /opt \
+ && mv /opt/allure-2.29.0 /opt/allure \
+ && rm -f /tmp/allure-2.29.0.zip \
+ && /opt/allure/bin/allure --version
+
+COPY jenkins.war /opt/jenkins/jenkins.war
+
+# Maven 走阿里云镜像；只挂载 /root/.m2/repository 时这份 settings 不会被卷遮住
+COPY m2-settings.xml /root/.m2/settings.xml
+
+EXPOSE 8080
+
+# 清掉基础镜像可能自带的 entrypoint，保证 docker run 直接是 java -jar
+ENTRYPOINT []
+CMD ["java", "-Xms256m", "-Xmx1536m", "-Duser.timezone=Asia/Shanghai", \
+     "-jar", "/opt/jenkins/jenkins.war", "--httpPort=8080", "--httpListenAddress=0.0.0.0"]

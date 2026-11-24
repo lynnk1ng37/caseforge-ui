@@ -1,0 +1,61 @@
+# 运行期配置（对应 Python 版 config.json 的 ui / api 段）
+# 环境变量优先级高于本文件：
+#   LILISHOP_UI_BASE_URL / LILISHOP_BASE_URL / UI_HEADLESS / UI_TIMEOUT_MS
+#   LILISHOP_USERNAME / LILISHOP_PASSWORD
+#   UI_TEST_GOODS_ID / UI_TEST_SKU_ID / UI_TEST_GOODS_NAME / UI_TEST_GOODS_PRICE
+
+ui:
+  base_url: http://127.0.0.1
+  # 环境标识，只用于 Allure 报告元信息（可用 UI_ENV 或 -Dui.env 覆盖）
+  env: local
+  headless: true
+  # 用系统 Chrome，不依赖 Playwright 自带 Chromium；设为空串则用自带浏览器
+  channel: chrome
+  slow_mo: 0
+  timeout_ms: 15000
+  viewport:
+    width: 1440
+    height: 900
+
+api:
+  base_url: http://127.0.0.1/api
+  username: kk1024
+  password: "111111"
+
+goods:
+  id: "1376373278360207360"
+  sku_id: "1387977447483375616"
+  name: "一加 OnePlus 9"
+  price: 3799.00
+
+# 多店铺/多价格场景用的第二、第三个 SKU（家家乐店铺，实测 2026-11-23）
+goods2:
+  id: "1411933154009481217"
+  sku_id: "1411933154370191362"
+  name: "我是测试商品"
+  price: 1.00
+
+goods3:
+  id: "1415233400433135618"
+  sku_id: "1415233400680599553"
+  name: "2323"
+  price: 1.00
+
+locators:
+  - common.yaml
+  - home.yaml
+  - goods_list.yaml
+  - goods_detail.yaml
+  - coupon.yaml
+  - cart.yaml
+  - checkout.yaml
+  - payment.yaml
+  - order_list.yaml
+  - order_detail.yaml
+  - after_sale.yaml
+  - asset.yaml
+  - point_goods.yaml
+
+# 下架场景专用商品（实测：置 DOWN 后详情页展示「当前商品已下架」）
+off_shelf_goods:
+  id: "1400327593747546112"
