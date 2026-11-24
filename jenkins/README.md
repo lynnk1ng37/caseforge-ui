@@ -11,13 +11,14 @@
 | JDK 21（不是 17） | Jenkins 2.580.2 的 class 文件版本是 65，JDK 17 启动即 `UnsupportedClassVersionError`。项目仍按 pom 的 release=17 编译 |
 | 容器内 `127.0.0.1:80` → 被测站点（socat） | 被测前端的 `/config.js` 把 API 写死成 `http://127.0.0.1:80/api`，浏览器在容器里跑时 127.0.0.1 不是被测系统 |
 | 固定网络 `lilishop-net` | 默认 bridge 不支持容器名 DNS；`docker network connect` 热挂到被测容器，不重建、不停业务 |
+| 容器内装 docker CLI + 挂宿主 `docker.sock` | `DbFixture` 用 `docker exec lilishop-all mysql` 造数（库存/上下架/余额），测试进程里直接调 docker |
 | 80 端口作为 BASE_URL | 被测系统 80 是买家端（200），8080 是后端 API（根路径 404） |
 
 ## 构建 / 启动
 
 ```bash
 cd /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA
-docker build -t jenkins-ui-test:1.1 jenkins/
+docker build -t jenkins-ui-test:1.2 jenkins/
 
 docker rm -f jenkins 2>/dev/null
 docker run -d --name jenkins \
@@ -25,6 +26,7 @@ docker run -d --name jenkins \
   -v jenkins_home:/var/jenkins_home \
   -v jenkins_m2:/root/.m2/repository \
   -v /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA:/src/UI-TEST-AI-FOR-JAVA:ro \
+  -v /Users/lynnking/.docker/run/docker.sock:/var/run/docker.sock \
   --shm-size=1g \
   --add-host host.docker.internal:host-gateway \
   --network lilishop-net \
@@ -32,7 +34,7 @@ docker run -d --name jenkins \
   -e LILISHOP_REDIS_HOST=lilishop-all \
   -e LILISHOP_REDIS_PORT=6379 \
   -e LILISHOP_REDIS_PASSWORD=lilishop \
-  jenkins-ui-test:1.1
+  jenkins-ui-test:1.2
 ```
 
 - 想对局域网开放：把 `-p 127.0.0.1:8082:8080` 改成 `-p 8082:8080`（当前只绑本机）。
@@ -60,9 +62,10 @@ docker run -d --name jenkins \
 - **compose down/up 会重建网络**：`lilishop-net` 要是被测系统 compose 里没有声明，重建后 Jenkins 会掉线。
   应对：把网络名固定在 compose 文件里（`networks: { lilishop-net: { external: true } }`），
   或重建后重新 `docker network connect lilishop-net lilishop-all`。
-- **依赖 MySQL 造数的场景跑不了**：`DbFixture` 在测试进程里执行 `docker exec lilishop-all mysql ...`，
-  Jenkins 容器里没有 docker CLI 也没有 socket。需要时：镜像里装 docker CLI + `-v /var/run/docker.sock:/var/run/docker.sock`
-  （等于把宿主 root 权限交给构建，自己权衡）。
+- **docker.sock 等于宿主 root**：`DbFixture` 需要 `docker exec`，所以容器挂了宿主 socket，
+  任何能在 Jenkins 里跑脚本的人都能控制宿主 Docker（起特权容器、读宿主文件）。这是本地单人环境的取舍；
+  多用户环境应改成专用的造数服务（HTTP 网关）或把 DB 访问改成 JDBC 直连。
+  本机 socket 路径是 `~/.docker/run/docker.sock`（Docker Desktop），不是 `/var/run/docker.sock`。
 - **Allure 附件挂在用例的 Tear down 节点下**，不是红色步骤本身：`BrowserHooks` 在 `@After` 里取证，
   allure-cucumber7 把它们归到 fixture。点开失败用例 → 展开 Tear down 就能看到
   失败现场 / 失败截图 / 失败时 DOM / playwright trace。
