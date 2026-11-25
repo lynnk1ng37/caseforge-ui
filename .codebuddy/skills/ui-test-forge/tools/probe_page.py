@@ -331,7 +331,12 @@ def _login_cookies(project_root: str) -> List[Dict[str, str]]:
     api_base = os.getenv("LILISHOP_BASE_URL", "http://127.0.0.1/api").rstrip("/")
     ui_host = os.getenv("LILISHOP_UI_HOST") or "127.0.0.1"
     username = os.getenv("LILISHOP_USERNAME", "kk1024")
-    password = os.getenv("LILISHOP_PASSWORD", "111111")
+    password = os.getenv("LILISHOP_PASSWORD")
+    if not password:
+        raise SystemExit(
+            "请先设置 LILISHOP_PASSWORD 环境变量（lilishop 演示账号密码）；"
+            "缺省时会以匿名身份探测，结果不可信"
+        )
 
     body = urllib.parse.urlencode(
         {"username": username, "password": _md5_hex(password)}

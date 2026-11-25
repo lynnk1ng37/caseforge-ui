@@ -1,5 +1,5 @@
 {
-  "project_root": "/Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA",
+  "project_root": ".",
   "language": "java",
   "stack": "playwright-java + cucumber7 + junit5-platform",
   "base_url_key": "LILISHOP_UI_BASE_URL",

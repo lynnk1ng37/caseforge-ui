@@ -16,7 +16,7 @@ enabledAutoRun: false
 
 - 待审查文件路径（可能跨 `steps/` `pages/` `flows/` `locators/` `features/`）
 - 可选：`ui_test_dwp_temp/design_checklist.md`、目标 tag（如 `@p0`、`@LILI-ORDER-001`）
-- 项目根：`/Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA`
+- 项目根：仓库根目录（不要写死绝对路径）
 
 ## 技术栈前提
 
@@ -95,7 +95,7 @@ enabledAutoRun: false
 ## Phase B：稳定性运行（关键：跑 3 次）
 
 ```bash
-cd /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA
+cd <仓库根>
 .venv/bin/python .codebuddy/skills/ui-test-forge/tools/run_stability.py --runs 3
 # 只验某条场景：--runs 3 -m "@LILI-ORDER-001"
 ```

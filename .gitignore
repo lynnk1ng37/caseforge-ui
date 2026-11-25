@@ -1,8 +1,13 @@
 target/
 ui_test_dwp_temp/artifacts/
+__pycache__/
+*.pyc
+.venv/
+jenkins/jenkins.war
+*.war
+*.zip
+.env
 ui_test_dwp_temp/probe/
-allure-results/
-allure-results-ui/
 .idea/
 *.iml
 .DS_Store

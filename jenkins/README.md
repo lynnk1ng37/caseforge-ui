@@ -17,7 +17,7 @@
 ## 构建 / 启动
 
 ```bash
-cd /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA
+cd caseforge-ui
 docker build -t jenkins-ui-test:1.2 jenkins/
 
 docker rm -f jenkins 2>/dev/null
@@ -25,8 +25,8 @@ docker run -d --name jenkins \
   -p 127.0.0.1:8082:8080 \
   -v jenkins_home:/var/jenkins_home \
   -v jenkins_m2:/root/.m2/repository \
-  -v /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA:/src/UI-TEST-AI-FOR-JAVA:ro \
-  -v /Users/lynnking/.docker/run/docker.sock:/var/run/docker.sock \
+  -v "$PWD":/src/caseforge-ui:ro \
+  -v ~/.docker/run/docker.sock:/var/run/docker.sock \
   --shm-size=1g \
   --add-host host.docker.internal:host-gateway \
   --network lilishop-net \
@@ -52,7 +52,7 @@ docker run -d --name jenkins \
    为什么不是 Username with password：Declarative 的 `environment { X = credentials(id) }` 对
    用户名密码型会把 `X` 设成 `user:pass`（另有 `X_USR`/`X_PSW`），而 `TestConfig` 直接读
    `LILISHOP_USERNAME`，会拿到 `kk1024:111111` 导致接口登录失败。Secret text 才会原样注入。
-5. Job：`ui-test-ai-for-java`，Pipeline script from SCM，Git URL `file:///src/UI-TEST-AI-FOR-JAVA`，
+5. Job：`caseforge-ui`，Pipeline script from SCM，Git URL `file:///src/caseforge-ui`，
    script path `Jenkinsfile`。项目目录里因此初始化了一个本地 git 仓库（只有一个提交），
    Jenkinsfile 改动后要 `git commit` 才会被下一次构建取到。
 6. 容器级环境变量 `LILISHOP_REDIS_HOST/PORT/PASSWORD`：cart 前置造数直连 Redis，Jenkinsfile 不传这些。
@@ -80,6 +80,4 @@ docker volume rm jenkins_home jenkins_m2          # 会删掉 Jenkins 全部配�
 docker network disconnect lilishop-net lilishop-all
 docker network rm lilishop-net
 rm -rf jenkins/ ~/.jenkins-ui-test                # 构建上下文与本地密码文件
-# 可选：撤销为了提供 Jenkinsfile 而建的本地 git 仓库
-rm -rf /Users/lynnking/CodeBuddy/UI-TEST-AI-FOR-JAVA/.git
 ```

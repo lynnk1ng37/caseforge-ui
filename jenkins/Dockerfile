@@ -47,7 +47,12 @@ COPY m2-settings.xml /root/.m2/settings.xml
 
 # 宿主目录以只读方式挂到 /src，属主是 uid 501；容器里以 root 跑 git 会把仓库判成
 # "dubious ownership" 而拒绝 clone，这里显式放行这一个固定路径。
-RUN git config --system --add safe.directory /src/UI-TEST-AI-FOR-JAVA
+RUN git config --system --add safe.directory /src/caseforge-ui
+
+# Docker CLI（静态二进制）：DbFixture 用 `docker exec lilishop-all mysql ...` 造数，
+# 因此需要 CLI + 运行期挂载宿主 docker.sock。CLI 版本 28.5.1 与 daemon 1.56 API 兼容。
+COPY docker-cli /usr/local/bin/docker
+RUN chmod +x /usr/local/bin/docker && docker --version
 
 COPY entrypoint.sh /usr/local/bin/jenkins-entrypoint.sh
 RUN chmod +x /usr/local/bin/jenkins-entrypoint.sh

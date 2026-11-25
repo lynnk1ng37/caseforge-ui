@@ -102,8 +102,10 @@ def resolve_project_root(config: Dict[str, Any]) -> str:
 def _abs(project_root: str, path: str) -> str:
     path = os.path.expanduser(str(path))
     if not os.path.isabs(path):
-        path = os.path.join(project_root, path)
-    return os.path.normpath(path)
+        path = os.path.join(project_root or os.getcwd(), path)
+    # project_root 允许写成相对路径（如 "."），这里统一绝对化，
+    # 否则「监听目录」与「目标文件」一个相对一个绝对，路径比对永远不命中，门禁会静默放行。
+    return os.path.abspath(os.path.normpath(path))
 
 
 def _glob_to_regex(pattern: str) -> re.Pattern:
@@ -414,9 +416,11 @@ def evaluate(
     for key in ("test_case_dirs", "page_dirs", "flow_dirs", "locator_dirs"):
         watch_dirs.extend(paths_cfg.get(key) or [])
     watch_abs = [_to_posix(_abs(project_root, d)).rstrip("/") for d in watch_dirs]
-    target = _to_posix(target_path)
-    rel = os.path.relpath(target_path, project_root)
-    rel = _to_posix(rel)
+    # target 必须绝对化后再与 watch_abs 比较：调用方可能传相对路径（自检就是），
+    # 也可能 project_root 写成 "."，不统一绝对化会出现「一个相对一个绝对」永不命中，门禁静默放行。
+    target = _to_posix(_abs(project_root, target_path))
+    base = _to_posix(_abs(project_root, "."))
+    rel = _to_posix(os.path.relpath(target, base))
 
     in_watch = any(
         target == d or target.startswith(d + "/") for d in watch_abs
