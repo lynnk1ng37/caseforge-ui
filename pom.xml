@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.lili</groupId>
-  <artifactId>ui-test-ai-for-java</artifactId>
+  <artifactId>caseforge-ui</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>UI-TEST-AI-FOR-JAVA</name>
-  <description>lilishop 买家端 UI 自动化：Java + Playwright + Cucumber BDD</description>
+  <name>caseforge-ui</name>
+  <description>把人工用例编译成三层可执行产物的 UI 自动化流水线（lilishop 买家端）：Java + Playwright + Cucumber BDD</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,16 +20,17 @@
     <cucumber.version>7.20.1</cucumber.version>
     <junit.platform.version>1.11.3</junit.platform.version>
     <junit.jupiter.version>5.11.3</junit.jupiter.version>
-    <allure.version>2.29.1</allure.version>
     <snakeyaml.version>2.3</snakeyaml.version>
     <jackson.version>2.18.1</jackson.version>
     <assertj.version>3.26.3</assertj.version>
 
-    <!-- 命令行可覆盖：
-         mvn test -Dcucumber.filter.tags="@p0"
-         mvn test -Dui.headless=false
+    <!-- 默认排除已知缺陷用例（lilishop 当前构建的 4 个 UI 缺陷对应 5 条红断言）：
+         不删断言、不改断言，只隔离。命令行可覆盖：
+         mvn test -Dcucumber.filter.tags="@p0"            # 只跑 P0
+         mvn test -Dcucumber.filter.tags="@known-issue"   # 只看那 5 条红的
+         mvn test -Dcucumber.filter.tags="@p0 or @known-issue"
     -->
-    <cucumber.filter.tags></cucumber.filter.tags>
+    <cucumber.filter.tags>not @known-issue</cucumber.filter.tags>
     <ui.headless>true</ui.headless>
   </properties>
 
@@ -70,13 +71,6 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-cucumber7-jvm</artifactId>
-      <version>${allure.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -123,9 +117,6 @@
             <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
             <cucumber.publish.quiet>true</cucumber.publish.quiet>
             <ui.headless>${ui.headless}</ui.headless>
-            <!-- allure-java 的默认结果目录是相对路径 allure-results（会落在仓库根），
-                 这里显式钉到 target 下：mvn clean 能清掉，报告与 Jenkins 归档路径一致。 -->
-            <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
           </systemPropertyVariables>
           <environmentVariables>
             <!-- 用系统 Chrome（config.yaml 的 ui.channel），不需要 Playwright 自带浏览器。

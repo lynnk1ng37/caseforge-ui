@@ -45,7 +45,7 @@ public final class TestConfig {
     /**
      * 环境标识（local / uat / sit ...）。
      *
-     * <p>只进入 Allure 报告的环境信息，不参与任何业务分支；
+     * <p>只作为运行环境标识输出，不参与任何业务分支；
      * 单独给一个入口是为了避免各层各自读环境变量、口径不一致。
      */
     public String envName() {
