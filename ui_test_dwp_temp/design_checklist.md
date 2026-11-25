@@ -10,7 +10,7 @@
 | 人工用例来源 | `manual_testcases/02-测试用例设计 gerkin.md`（lilishop 买家端 120 条 Gherkin） |
 | 转写范围 | 首页与搜索、商品详情与营销、购物车、结算下单支付、个人中心订单售后、会员资产 |
 | 明确排除 | 分销中心（LLS-DIST-001 ~ LLS-DIST-014 全部不转写） |
-| 排除口径 | 需抓包篡改 / 并发 / 支付回调 / 超时关单 / DB 造数 / 商家或平台端操作 / 网络模拟的用例不转写（逐条见 `ui_test_dwp_temp/cases.yaml` 的 `excluded`） |
+| 排除口径 | 需抓包篡改 / 并发 / 支付回调 / 超时关单 / DB 造数 / 商家或平台端操作 / 网络模拟的用例不转写（逐条见 `ui_test_dwp_temp/cases.yaml` 的 `handoff`（移交清单）） |
 | 环境 | UI `http://127.0.0.1`（实测 200），API `http://127.0.0.1/api` |
 | 登录方式 | API 登录 + 注入 `accessToken` / `refreshToken` cookie（不处理滑块） |
 | 造数能力 | 容器 `lilishop-all`：MySQL 3306（root/lilishop，库 `lilishop`）、Redis 6379、管理端密码 123456；已实测可读写 `li_goods`/`li_goods_sku`/`li_order`/`li_member`/`li_points_goods` |
@@ -215,7 +215,7 @@
 | 边界 | 10 | 19% | ≥ 15% | 达标 |
 | 异常 | 7 | 13% | ≥ 10% | 达标 |
 
-合计 53 条；分销中心 14 条整体排除；其余未列入的场景逐条给出排除理由（见 `cases.yaml` 的 `excluded`）。
+合计 53 条；分销中心 14 条整体排除；其余未列入的场景逐条给出排除理由（见 `cases.yaml` 的 `handoff`（移交清单））。
 
 ## 实施批次
 
