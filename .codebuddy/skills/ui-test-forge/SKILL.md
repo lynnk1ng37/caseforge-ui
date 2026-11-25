@@ -44,7 +44,7 @@ description: 面向 Java + Playwright Java + Cucumber BDD 的 UI 自动化编写
 
 | 层 | 路径 |
 |---|---|
-| 场景 | `src/test/resources/features/*.feature`（首行 `# language: zh-CN`，中文关键字 `功能:`/`场景:`/`假设`/`当`/`那么`/`并且`） |
+| 场景 | `src/test/resources/features/*.feature`（**英文关键字** `Feature:`/`Scenario:`/`Background:`/`Given`/`When`/`Then`/`And`；步骤文本用中文。不要用 `# language: zh-CN`——IDE 插件只按英文关键字解析） |
 | 定位器 | `src/test/resources/locators/*.yaml` |
 | 路由 | `src/test/resources/routes.yaml` |
 | 配置 | `src/test/resources/config.yaml` |

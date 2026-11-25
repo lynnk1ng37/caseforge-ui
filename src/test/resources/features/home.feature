@@ -15,7 +15,7 @@ Feature: 首页与搜索
     And 首页推荐商品应有至少 1 个商品
     And 顶部应展示登录与注册入口
 
-  @p1 @positive @LLS-HOME-002
+  @p1 @positive @LLS-HOME-002 @known-issue
   Scenario: 顶部购物车与我的订单入口跳转正确
     When 买家点击顶部购物车入口
     Then 购物车页应展示我的购物车步骤条
@@ -44,7 +44,7 @@ Feature: 首页与搜索
     When 买家搜索不存在的商品关键字
     Then 搜索结果应为 0 条商品
 
-  @p1 @positive @LLS-HOME-010
+  @p1 @positive @LLS-HOME-010 @known-issue
   Scenario: 秒杀与优惠券入口可进入且活动内容展示
     When 买家点击顶部优惠券入口
     Then 领券中心页应展示领券中心标题

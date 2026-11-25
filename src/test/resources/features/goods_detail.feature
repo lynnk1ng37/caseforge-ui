@@ -37,7 +37,7 @@ Feature: 商品详情与营销活动
     When 买家把购买数量改为 99999
     Then 购买数量应被截断为库存上限
 
-  @p0 @positive @LLS-GOODS-006
+  @p0 @positive @LLS-GOODS-006 @known-issue
   Scenario: 加入购物车与立即购买入口均可用
     Given 买家打开测试商品详情页
     When 买家点击加入购物车

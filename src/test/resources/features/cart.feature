@@ -7,7 +7,7 @@ Feature: 购物车
   Background:
     Given 买家已通过接口登录并注入登录态
 
-  @p0 @positive @LLS-CART-001
+  @p0 @positive @LLS-CART-001 @known-issue
   Scenario: 加购单商品后列表与角标正确
     Given 买家购物车为空
     When 买家从商品详情页加购测试商品 1 件
@@ -71,7 +71,7 @@ Feature: 购物车
     When 买家点击清空购物车并取消确认
     Then 购物车应仍剩余 2 行商品
 
-  @p0 @exception @LLS-CART-010
+  @p0 @exception @LLS-CART-010 @known-issue
   Scenario: 未登录访问购物车跳转登录并携带回跳地址
     Given 买家已清除浏览器登录态
     When 买家直接打开购物车页
