@@ -5,7 +5,6 @@
 写完后由**只读**验证 Agent 连跑三次判 flake。
 技术栈：`Java 17 + Playwright Java + Cucumber BDD + JUnit5 Platform`。
 
-> 🎬 **3 分钟演示**：【待补：视频链接】 ｜ 📊 **最近一次执行报告**：【待补：gh-pages 链接】
 > 📖 **设计取舍**：[从零读懂 UI-TEST-AI.md](从零读懂%20UI-TEST-AI.md) ｜ 上手：[使用手册.md](使用手册.md)
 > ⚠️ **边界**：LLM 只在**建设期**参与（探测、给候选、生成草案），**运行期零 LLM、零探测**——
 > 回归每天都要跑，不能有随机性，也不能每次烧 token。
